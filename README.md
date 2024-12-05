@@ -77,3 +77,17 @@ k3s-server-03   Ready    control-plane,etcd,master   15m     v1.30.6+k3s1   192.
 k3s-worker-01   Ready    <none>                      2m10s   v1.30.6+k3s1   192.168.1.211   <none>        Ubuntu 24.04.1 LTS   6.8.0-49-generic   containerd://1.7.22-k3s1
 k3s-worker-02   Ready    <none>                      45s     v1.30.6+k3s1   192.168.1.212   <none>        Ubuntu 24.04.1 LTS   6.8.0-49-generic   containerd://1.7.22-k3s1
 ```
+
+## Tainting Control Plane Nodes
+
+To prevent workloads from running on the control plane nodes, you can taint them.  
+This ensures that only specific pods with the corresponding tolerations can be scheduled on these nodes.  
+Run the following `kubectl` commands to taint your control plane nodes:
+
+```
+kubectl taint nodes k3s-server-01 node-role.kubernetes.io/control-plane:NoSchedule
+kubectl taint nodes k3s-server-02 node-role.kubernetes.io/control-plane:NoSchedule
+kubectl taint nodes k3s-server-03 node-role.kubernetes.io/control-plane:NoSchedule
+```
+
+This will prevent workloads from being scheduled on the `k3s-server-*` nodes unless they have a matching toleration.
