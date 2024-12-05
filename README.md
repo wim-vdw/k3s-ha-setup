@@ -1,4 +1,4 @@
-# K3s high availability (HA) Setup
+# K3s High Availability (HA) Setup
 
 ## Introduction
 
