@@ -1,4 +1,4 @@
-# K3s Setup Notes
+# K3s high availability (HA) Setup Notes
 
 ## VM overview
 
@@ -91,3 +91,14 @@ kubectl taint nodes k3s-server-03 node-role.kubernetes.io/control-plane:NoSchedu
 ```
 
 This will prevent workloads from being scheduled on the `k3s-server-*` nodes unless they have a matching toleration.
+
+## Bootstrapping with ArgoCD and Deploying Workloads
+
+Now that your cluster is set up, you can deploy workloads on it. However, before doing so it is recommended to bootstrap
+the cluster with ArgoCD for easier and more efficient management of your Kubernetes resources.  
+ArgoCD is a declarative, GitOps continuous delivery tool for Kubernetes. By integrating it into your cluster, you can
+manage deployments from Git repositories and streamline your deployment process.  
+After bootstrapping with ArgoCD, you can deploy your workloads seamlessly, with ArgoCD taking care of the application
+management and lifecycle.
+
+Example: [https://github.com/wim-vdw/kubernetes-tests](https://github.com/wim-vdw/kubernetes-tests)
