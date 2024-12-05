@@ -49,5 +49,5 @@ export INSTALL_K3S_VERSION=v1.30.6+k3s1
 export K3S_URL=https://192.168.1.201:6443
 export K3S_TOKEN=<token from first server>
 
-sudo curl -sfL https://get.k3s.io | sh -s -
+sudo curl -sfL https://get.k3s.io | sh -s - agent
 ```
