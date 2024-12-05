@@ -63,7 +63,7 @@ export K3S_TOKEN=<token from first server>
 sudo curl -sfL https://get.k3s.io | sh -s - agent
 ```
 
-## Set up kubectl to use the K3s kubeconfig file.
+## Set up kubectl to use the K3s kubeconfig file
 
 From one of the servers copy the `k3s.yaml` file to your local machine (example to $HOME/.kube/k3s.yaml).  
 Edit the `k3s.yaml` file and correct the server address with the IP address of one of the servers (control planes).   
@@ -167,6 +167,6 @@ test04           green-dep-5d77bd8d4d-hvsfr                          1/1     Run
 
 ## Task list
 
-- [X] Add workload example after bootstrapping ArgoCD and deploying core-apps.
+- [X] Add workload example after bootstrapping ArgoCD and deploying core and test applications.
 - [ ] Analyse performance/stability of etcd datastore.
 - [ ] Make Kubernetes API Server high available with `HAProxy` and `KeepAlived`.
