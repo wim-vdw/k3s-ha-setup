@@ -117,6 +117,54 @@ management and lifecycle.
 
 Example: [https://github.com/wim-vdw/kubernetes-tests](https://github.com/wim-vdw/kubernetes-tests)
 
+## Example Workload after Bootstrapping with ArgoCD
+
+After bootstrapping the cluster with ArgoCD and deploying core and test applications the workload is distributed across
+the nodes.
+
+Core applications:
+
+* `Ingress NGINX` controller for Kubernetes
+* `MetalLB` load-balancer implementation for bare metal Kubernetes clusters
+* `Reloader` controller to watch changes in Kubernetes ConfigMaps and Secrets
+
+Control Plane Taints:
+
+The control plane nodes are tainted to prevent most workloads from running on them, ensuring they remain dedicated to
+cluster management.  
+All workloads are primarily scheduled on worker nodes.
+
+```bash
+kubectl get pods -A -o wide
+NAMESPACE        NAME                                                READY   STATUS      RESTARTS        AGE   IP              NODE            NOMINATED NODE   READINESS GATES
+argocd           argocd-application-controller-0                     1/1     Running     0               32m   10.42.3.8       k3s-worker-01   <none>           <none>
+argocd           argocd-applicationset-controller-6899bbc884-hnsdv   1/1     Running     0               32m   10.42.3.5       k3s-worker-01   <none>           <none>
+argocd           argocd-dex-server-bcf886644-j7f95                   1/1     Running     0               32m   10.42.4.7       k3s-worker-02   <none>           <none>
+argocd           argocd-notifications-controller-64fb4bc4f9-mt7bh    1/1     Running     0               32m   10.42.3.6       k3s-worker-01   <none>           <none>
+argocd           argocd-redis-6cbf9bf4c5-9x84v                       1/1     Running     0               32m   10.42.4.8       k3s-worker-02   <none>           <none>
+argocd           argocd-repo-server-b5d548b6c-42l7r                  1/1     Running     0               32m   10.42.3.7       k3s-worker-01   <none>           <none>
+argocd           argocd-server-65bc9998bd-6q67m                      1/1     Running     0               32m   10.42.4.9       k3s-worker-02   <none>           <none>
+ingress-nginx    ingress-nginx-admission-create-zx7hl                0/1     Completed   2               12m   10.42.3.10      k3s-worker-01   <none>           <none>
+ingress-nginx    ingress-nginx-admission-patch-rwb9h                 0/1     Completed   3               12m   10.42.3.9       k3s-worker-01   <none>           <none>
+ingress-nginx    ingress-nginx-controller-85bc8b845b-4xg48           1/1     Running     0               12m   10.42.3.11      k3s-worker-01   <none>           <none>
+kube-system      coredns-7b98449c4-d7khv                             1/1     Running     2 (62m ago)     74m   10.42.4.5       k3s-worker-02   <none>           <none>
+kube-system      local-path-provisioner-595dcfc56f-glm8h             1/1     Running     2 (62m ago)     76m   10.42.3.4       k3s-worker-01   <none>           <none>
+kube-system      metrics-server-cdcc87586-47pfb                      1/1     Running     1 (62m ago)     65m   10.42.4.6       k3s-worker-02   <none>           <none>
+metallb-system   controller-6dd967fdc7-kgphg                         1/1     Running     0               11m   10.42.3.12      k3s-worker-01   <none>           <none>
+metallb-system   speaker-5plfh                                       1/1     Running     0               11m   192.168.1.211   k3s-worker-01   <none>           <none>
+metallb-system   speaker-f77nr                                       1/1     Running     0               11m   192.168.1.201   k3s-server-01   <none>           <none>
+metallb-system   speaker-m6cmd                                       1/1     Running     1 (8m57s ago)   11m   192.168.1.203   k3s-server-03   <none>           <none>
+metallb-system   speaker-nw8kq                                       1/1     Running     2 (8m57s ago)   11m   192.168.1.212   k3s-worker-02   <none>           <none>
+metallb-system   speaker-rk25l                                       1/1     Running     0               11m   192.168.1.202   k3s-server-02   <none>           <none>
+reloader         reloader-reloader-795f5cbd78-zpnjl                  1/1     Running     0               12m   10.42.4.10      k3s-worker-02   <none>           <none>
+test04           blue-dep-7457ff8c59-6w64p                           1/1     Running     0               45s   10.42.3.13      k3s-worker-01   <none>           <none>
+test04           blue-dep-7457ff8c59-qfwfj                           1/1     Running     0               45s   10.42.4.13      k3s-worker-02   <none>           <none>
+test04           blue-dep-7457ff8c59-rdx74                           1/1     Running     0               45s   10.42.4.11      k3s-worker-02   <none>           <none>
+test04           green-dep-5d77bd8d4d-5gbxv                          1/1     Running     0               45s   10.42.4.12      k3s-worker-02   <none>           <none>
+test04           green-dep-5d77bd8d4d-6srq9                          1/1     Running     0               45s   10.42.3.15      k3s-worker-01   <none>           <none>
+test04           green-dep-5d77bd8d4d-hvsfr                          1/1     Running     0               45s   10.42.3.14      k3s-worker-01   <none>           <none>
+```
+
 ## Task list
 
 - [ ] Add workload example after bootstrapping ArgoCD and deploying core-apps.
