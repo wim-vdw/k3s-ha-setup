@@ -10,7 +10,7 @@
 | k3s-worker-01 | BC:24:11:12:B1:D2 | 192.168.1.211 | 2           | 32             | 2         |
 | k3s-worker-02 | BC:24:11:07:BA:1A | 192.168.1.212 | 2           | 32             | 2         |
 
-## Install first server
+## Install first server (control plane node)
 
 Use the `--cluster-init` flag to create the first server in the cluster and initialize the embedded `etcd` datastore for
 high availability (HA).  
@@ -30,4 +30,24 @@ sudo cat /etc/rancher/k3s/k3s.yaml
 
 # Displays the token used for joining nodes to the k3s cluster.
 sudo cat /var/lib/rancher/k3s/server/token
+```
+
+## Install additional servers (control plane nodes)
+
+```bash
+export INSTALL_K3S_VERSION=v1.30.6+k3s1
+export K3S_URL=https://192.168.1.201:6443
+export K3S_TOKEN=<token from first server>
+
+sudo curl -sfL https://get.k3s.io |sh -s - server --disable="traefik" --disable="servicelb"
+```
+
+## Install agents (worker nodes)
+
+```bash
+export INSTALL_K3S_VERSION=v1.30.6+k3s1
+export K3S_URL=https://192.168.1.201:6443
+export K3S_TOKEN=<token from first server>
+
+sudo curl -sfL https://get.k3s.io | sh -s -
 ```
