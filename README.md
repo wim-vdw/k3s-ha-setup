@@ -9,3 +9,19 @@
 | k3s-server-02 | BC:24:11:4F:A3:86 | 192.168.1.203 | 2           | 32             | 2         |
 | k3s-worker-01 | BC:24:11:12:B1:D2 | 192.168.1.211 | 2           | 32             | 2         |
 | k3s-worker-02 | BC:24:11:07:BA:1A | 192.168.1.212 | 2           | 32             | 2         |
+
+## Install first server
+
+Use the `--cluster-init` flag to create the first server in the cluster and initialize the embedded `etcd` datastore for
+high availability (HA).
+
+```bash
+# Installs k3s, initializes the first server in HA mode and disables Traefik and the ServiceLB load balancer.
+sudo curl -sfL https://get.k3s.io | sh -s - server --cluster-init --disable="traefik" --disable="servicelb"
+
+# Displays the kubeconfig file for accessing the k3s cluster.
+sudo cat /etc/rancher/k3s/k3s.yaml
+
+# Displays the token used for joining nodes to the k3s cluster.
+sudo cat /var/lib/rancher/k3s/server/token
+```
