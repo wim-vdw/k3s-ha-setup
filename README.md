@@ -5,7 +5,7 @@
 This project involves deploying a Kubernetes cluster using `K3s` on a set of 5 virtual machines (VMs). The VMs are
 running on Proxmox hosted on an old x86 PC with 16Gb of memory. The setup is designed to provide a lightweight,
 efficient and scalable Kubernetes environment for testing and development.  
-The cluster consists of 3 control-plane nodes and 2 worker nodes, providing a solid foundation for deploying and
+The cluster consists of 3 control plane nodes and 2 worker nodes, providing a solid foundation for deploying and
 managing containerized applications. The use of `K3s` ensures minimal resource overhead, making it ideal for
 environments
 with limited hardware resources.
