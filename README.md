@@ -1,4 +1,14 @@
-# K3s high availability (HA) Setup Notes
+# K3s high availability (HA) Setup
+
+## Introduction
+
+This project involves deploying a Kubernetes cluster using `K3s` on a set of 5 virtual machines (VMs). The VMs are
+running on Proxmox hosted on an old x86 PC with 16Gb of memory. The setup is designed to provide a lightweight,
+efficient and scalable Kubernetes environment for testing and development.  
+The cluster consists of 3 control-plane nodes and 2 worker nodes, providing a solid foundation for deploying and
+managing containerized applications. The use of `K3s` ensures minimal resource overhead, making it ideal for
+environments
+with limited hardware resources.
 
 ## VM overview
 
@@ -14,21 +24,22 @@
 
 Use the `--cluster-init` flag to create the first server in the cluster and initialize the embedded `etcd` datastore for
 high availability (HA).  
-To install a specific version of k3s, set the `INSTALL_K3S_VERSION` environment variable before running the installation
+To install a specific version of `K3s`, set the `INSTALL_K3S_VERSION` environment variable before running the
+installation
 script.  
-All k3s versions can be found here: [k3s release](https://github.com/k3s-io/k3s/releases)
+All `K3s` versions can be found here: [k3s release](https://github.com/k3s-io/k3s/releases)
 
 ```bash
-# Use a specific version of k3s.
+# Use a specific version of K3s.
 export INSTALL_K3S_VERSION=v1.30.6+k3s1
 
-# Installs k3s, initializes the first server in HA mode and disables Traefik and the ServiceLB load balancer.
+# Installs K3s, initializes the first server in HA mode and disables Traefik and the ServiceLB load balancer.
 sudo curl -sfL https://get.k3s.io | sh -s - server --cluster-init --disable="traefik" --disable="servicelb"
 
-# Displays the kubeconfig file for accessing the k3s cluster.
+# Displays the kubeconfig file for accessing the K3s cluster.
 sudo cat /etc/rancher/k3s/k3s.yaml
 
-# Displays the token used for joining nodes to the k3s cluster.
+# Displays the token used for joining nodes to the K3s cluster.
 sudo cat /var/lib/rancher/k3s/server/token
 ```
 
@@ -52,7 +63,7 @@ export K3S_TOKEN=<token from first server>
 sudo curl -sfL https://get.k3s.io | sh -s - agent
 ```
 
-## Set up kubectl to use the k3s kubeconfig file.
+## Set up kubectl to use the K3s kubeconfig file.
 
 From one of the servers copy the `k3s.yaml` file to your local machine (example to $HOME/.kube/k3s.yaml).  
 Edit the `k3s.yaml` file and correct the server address with the IP address of one of the servers (control planes).  
