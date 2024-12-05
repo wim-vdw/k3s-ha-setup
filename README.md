@@ -14,9 +14,12 @@
 
 Use the `--cluster-init` flag to create the first server in the cluster and initialize the embedded `etcd` datastore for
 high availability (HA).
+To install a specific version of k3s, set the `INSTALL_K3S_VERSION` environment variable before running the installation
+script.
 
 ```bash
 # Installs k3s, initializes the first server in HA mode and disables Traefik and the ServiceLB load balancer.
+export INSTALL_K3S_VERSION=v1.30.6+k3s1
 sudo curl -sfL https://get.k3s.io | sh -s - server --cluster-init --disable="traefik" --disable="servicelb"
 
 # Displays the kubeconfig file for accessing the k3s cluster.
