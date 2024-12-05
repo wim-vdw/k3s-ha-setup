@@ -167,6 +167,6 @@ test04           green-dep-5d77bd8d4d-hvsfr                          1/1     Run
 
 ## Task list
 
-- [ ] Add workload example after bootstrapping ArgoCD and deploying core-apps.
+- [X] Add workload example after bootstrapping ArgoCD and deploying core-apps.
 - [ ] Analyse performance/stability of etcd datastore.
 - [ ] Make Kubernetes API Server high available with `HAProxy` and `KeepAlived`.
