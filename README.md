@@ -41,7 +41,7 @@ Create VMs based on template and start them:
 #!/bin/bash
 
 qm clone 9000 100 --name k3s-server-01
-qm resize 100 scsi0 16G
+qm resize 100 scsi0 32G
 qm set 100 --net0 virtio,bridge=vmbr0,macaddr=BC:24:11:66:6F:07
 qm set 100 --cpu host
 qm set 100 --memory 2048
@@ -52,7 +52,7 @@ qm set 100 --ciupgrade 1
 qm set 100 --ipconfig0 ip=dhcp
 
 qm clone 9000 101 --name k3s-server-02
-qm resize 101 scsi0 16G
+qm resize 101 scsi0 32G
 qm set 101 --net0 virtio,bridge=vmbr0,macaddr=BC:24:11:02:57:C8
 qm set 101 --cpu host
 qm set 101 --memory 2048
@@ -63,7 +63,7 @@ qm set 101 --ciupgrade 1
 qm set 101 --ipconfig0 ip=dhcp
 
 qm clone 9000 102 --name k3s-server-03
-qm resize 102 scsi0 16G
+qm resize 102 scsi0 32G
 qm set 102 --net0 virtio,bridge=vmbr0,macaddr=BC:24:11:4F:A3:86
 qm set 102 --cpu host
 qm set 102 --memory 2048
@@ -74,7 +74,7 @@ qm set 102 --ciupgrade 1
 qm set 102 --ipconfig0 ip=dhcp
 
 qm clone 9000 200 --name k3s-worker-01
-qm resize 200 scsi0 16G
+qm resize 200 scsi0 32G
 qm set 200 --net0 virtio,bridge=vmbr0,macaddr=BC:24:11:12:B1:D2
 qm set 200 --cpu host
 qm set 200 --memory 4096
@@ -85,7 +85,7 @@ qm set 200 --ciupgrade 1
 qm set 200 --ipconfig0 ip=dhcp
 
 qm clone 9000 201 --name k3s-worker-02
-qm resize 201 scsi0 16G
+qm resize 201 scsi0 32G
 qm set 201 --net0 virtio,bridge=vmbr0,macaddr=BC:24:11:07:BA:1A
 qm set 201 --cpu host
 qm set 201 --memory 4096
@@ -250,5 +250,6 @@ test04           green-dep-5d77bd8d4d-hvsfr                          1/1     Run
 ## Task list
 
 - [X] Add workload example after bootstrapping ArgoCD and deploying core and test applications.
+- [X] Add VM creation with Proxmox and cloud-init.
 - [ ] Analyse performance/stability of etcd datastore.
 - [ ] Make Kubernetes API Server high available with `HAProxy` and `KeepAlived`.
