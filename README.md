@@ -22,6 +22,9 @@ with limited hardware resources.
 
 ## Create VMs in Proxmox
 
+[Proxmox Cloud-Init Support](https://pve.proxmox.com/pve-docs/pve-admin-guide.html#qm_cloud_init)  
+[Ubuntu Cloud Images](https://cloud-images.ubuntu.com)
+
 Create template based on cloud-init image:
 
 ```bash
