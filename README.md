@@ -191,20 +191,26 @@ kubectl taint nodes k3s-server-03 node-role.kubernetes.io/control-plane:NoSchedu
 
 This will prevent workloads from being scheduled on the `k3s-server-*` nodes unless they have a matching toleration.
 
-## Bootstrapping with ArgoCD and Deploying Workloads
+## Bootstrapping with Argo CD and Deploying Workloads
 
 Now that your cluster is set up, you can deploy workloads on it. However, before doing so it is recommended to bootstrap
-the cluster with ArgoCD for easier and more efficient management of your Kubernetes resources.  
-ArgoCD is a declarative, GitOps continuous delivery tool for Kubernetes. By integrating it into your cluster, you can
+the cluster with Argo CD for easier and more efficient management of your Kubernetes resources.  
+Argo CD is a declarative, GitOps continuous delivery tool for Kubernetes. By integrating it into your cluster, you can
 manage deployments from Git repositories and streamline your deployment process.  
-After bootstrapping with ArgoCD, you can deploy your workloads seamlessly, with ArgoCD taking care of the application
+After bootstrapping with Argo CD, you can deploy your workloads seamlessly, with Argo CD taking care of the application
 management and lifecycle.
 
-Example: [https://github.com/wim-vdw/kubernetes-tests](https://github.com/wim-vdw/kubernetes-tests)
+Argo CD setup and application deployment can be done using the following repositories:
 
-## Example Workload after Bootstrapping with ArgoCD
+* Argo CD installation and
+  configuration: [https://github.com/wim-vdw/argocd-setup](https://github.com/wim-vdw/argocd-setup)
+* Argo CD application definitions: [https://github.com/wim-vdw/argocd-apps](https://github.com/wim-vdw/argocd-apps)
+* Kubernetes manifests or Helm charts used by Argo CD
+  applications [https://github.com/wim-vdw/argocd-k8s-resources](https://github.com/wim-vdw/argocd-k8s-resources)
 
-After bootstrapping the cluster with ArgoCD and deploying core and test applications the workload is distributed across
+## Example Workload after Bootstrapping with Argo CD
+
+After bootstrapping the cluster with Argo CD and deploying core and test applications the workload is distributed across
 the nodes.
 
 Core applications:
@@ -252,7 +258,8 @@ test04           green-dep-5d77bd8d4d-hvsfr                          1/1     Run
 
 ## Task list
 
-- [X] Add workload example after bootstrapping ArgoCD and deploying core and test applications.
+- [X] Add workload example after bootstrapping Argo CD and deploying core and test applications.
 - [X] Add VM creation with Proxmox and cloud-init.
+- [X] Add new Argo CD configuration repositories.
 - [ ] Analyse performance/stability of etcd datastore.
 - [ ] Make Kubernetes API Server high available with `HAProxy` and `KeepAlived`.
