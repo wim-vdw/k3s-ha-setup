@@ -206,7 +206,7 @@ Argo CD setup and application deployment can be done using the following reposit
   configuration: [https://github.com/wim-vdw/argocd-setup](https://github.com/wim-vdw/argocd-setup)
 * Argo CD application definitions: [https://github.com/wim-vdw/argocd-apps](https://github.com/wim-vdw/argocd-apps)
 * Kubernetes manifests or Helm charts used by Argo CD
-  applications [https://github.com/wim-vdw/argocd-k8s-resources](https://github.com/wim-vdw/argocd-k8s-resources)
+  applications: [https://github.com/wim-vdw/argocd-k8s-resources](https://github.com/wim-vdw/argocd-k8s-resources)
 
 ## Example Workload after Bootstrapping with Argo CD
 
