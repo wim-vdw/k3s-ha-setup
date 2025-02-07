@@ -12,13 +12,14 @@ with limited hardware resources.
 
 ## VM overview
 
-| VM Name       | MAC Address       | IP Address    | Memory (Gb) | Disk Size (Gb) | CPU Cores |
-|---------------|-------------------|---------------|-------------|----------------|-----------|
-| k3s-server-01 | BC:24:11:66:6F:07 | 192.168.1.201 | 2           | 32             | 1         |
-| k3s-server-02 | BC:24:11:02:57:C8 | 192.168.1.202 | 2           | 32             | 1         |
-| k3s-server-03 | BC:24:11:4F:A3:86 | 192.168.1.203 | 2           | 32             | 1         |
-| k3s-worker-01 | BC:24:11:12:B1:D2 | 192.168.1.211 | 4           | 32             | 3         |
-| k3s-worker-02 | BC:24:11:07:BA:1A | 192.168.1.212 | 4           | 32             | 3         |
+| VM Name       | MAC Address       | IP Address   | Memory (Gb) | Disk Size (Gb) | CPU Cores |
+|---------------|-------------------|--------------|-------------|----------------|-----------|
+| k3s-server-01 | BC:24:11:66:6F:07 | 172.16.12.22 | 8           | 32             | 2         |
+| k3s-server-02 | BC:24:11:02:57:C8 | 172.16.12.23 | 8           | 32             | 2         |
+| k3s-server-03 | BC:24:11:4F:A3:86 | 172.16.12.24 | 8           | 32             | 2         |
+| k3s-worker-01 | BC:24:11:12:B1:D2 | 172.16.12.25 | 16          | 32             | 4         |
+| k3s-worker-02 | BC:24:11:07:BA:1A | 172.16.12.26 | 16          | 32             | 4         |
+| k3s-worker-03 | BC:24:11:07:BA:1A | 172.16.12.27 | 16          | 32             | 4         |
 
 ## Create VMs in Proxmox
 
@@ -31,8 +32,8 @@ Create template based on cloud-init image:
 #!/bin/bash
 
 qm create 9000 --name ubuntu-cloud-init --memory 2048 --net0 virtio,bridge=vmbr0 --scsihw virtio-scsi-pci
-qm set 9000 --scsi0 local-lvm:0,import-from=/var/lib/vz/template/iso/noble-server-cloudimg-amd64.img
-qm set 9000 --ide1 local-lvm:cloudinit
+qm set 9000 --scsi0 data:0,import-from=/var/lib/vz/template/iso/noble-server-cloudimg-amd64.img
+qm set 9000 --ide1 data:cloudinit
 qm set 9000 --boot order=scsi0
 qm set 9000 --serial0 socket --vga serial0
 qm template 9000
@@ -43,66 +44,102 @@ Create VMs based on template and start them:
 ```bash
 #!/bin/bash
 
-qm clone 9000 100 --name k3s-server-01
-qm resize 100 scsi0 32G
-qm set 100 --net0 virtio,bridge=vmbr0,macaddr=BC:24:11:66:6F:07
-qm set 100 --cpu host
-qm set 100 --memory 2048
-qm set 100 --cores 1
-qm set 100 --ciuser wim
-qm set 100 --sshkey id_rsa.pub
-qm set 100 --ciupgrade 1
-qm set 100 --ipconfig0 ip=dhcp
+qm clone 9000 220 --name k3s-server-01
+qm resize 220 scsi0 32G
+qm set 220 --net0 virtio,bridge=vmbr0,tag=12
+qm set 220 --cpu host
+qm set 220 --memory 8192
+qm set 220 --cores 2
+qm set 220 --ostype l26
+qm set 220 --tags k3s
+qm set 220 --localtime 1
+qm set 220 --onboot 1
+qm set 220 --ciuser jurre
+qm set 220 --sshkey ~/.ssh/id_rsa.pub
+qm set 220 --ciupgrade 1
+qm set 220 --ipconfig0 ip=172.16.12.22/24,gw=172.16.12.1
 
-qm clone 9000 101 --name k3s-server-02
-qm resize 101 scsi0 32G
-qm set 101 --net0 virtio,bridge=vmbr0,macaddr=BC:24:11:02:57:C8
-qm set 101 --cpu host
-qm set 101 --memory 2048
-qm set 101 --cores 1
-qm set 101 --ciuser wim
-qm set 101 --sshkey id_rsa.pub
-qm set 101 --ciupgrade 1
-qm set 101 --ipconfig0 ip=dhcp
+qm clone 9000 221 --name k3s-server-02
+qm resize 221 scsi0 32G
+qm set 221 --net0 virtio,bridge=vmbr0,tag=12
+qm set 221 --cpu host
+qm set 221 --memory 8192
+qm set 221 --cores 2
+qm set 221 --ostype l26
+qm set 221 --tags k3s
+qm set 221 --localtime 1
+qm set 221 --onboot 1
+qm set 221 --ciuser jurre
+qm set 221 --sshkey ~/.ssh/id_rsa.pub
+qm set 221 --ciupgrade 1
+qm set 221 --ipconfig0 ip=172.16.12.23/24,gw=172.16.12.1
 
-qm clone 9000 102 --name k3s-server-03
-qm resize 102 scsi0 32G
-qm set 102 --net0 virtio,bridge=vmbr0,macaddr=BC:24:11:4F:A3:86
-qm set 102 --cpu host
-qm set 102 --memory 2048
-qm set 102 --cores 1
-qm set 102 --ciuser wim
-qm set 102 --sshkey id_rsa.pub
-qm set 102 --ciupgrade 1
-qm set 102 --ipconfig0 ip=dhcp
+qm clone 9000 222 --name k3s-server-03
+qm resize 222 scsi0 32G
+qm set 222 --net0 virtio,bridge=vmbr0,tag=12
+qm set 222 --cpu host
+qm set 222 --memory 8192
+qm set 222 --cores 2
+qm set 221 --ostype l26
+qm set 222 --tags k3s
+qm set 222 --localtime 1
+qm set 222 --onboot 1
+qm set 222 --ciuser jurre
+qm set 222 --sshkey ~/.ssh/id_rsa.pub
+qm set 222 --ciupgrade 1
+qm set 222 --ipconfig0 ip=172.16.12.24/24,gw=172.16.12.1
 
-qm clone 9000 200 --name k3s-worker-01
-qm resize 200 scsi0 32G
-qm set 200 --net0 virtio,bridge=vmbr0,macaddr=BC:24:11:12:B1:D2
-qm set 200 --cpu host
-qm set 200 --memory 4096
-qm set 200 --cores 3
-qm set 200 --ciuser wim
-qm set 200 --sshkey id_rsa.pub
-qm set 200 --ciupgrade 1
-qm set 200 --ipconfig0 ip=dhcp
+qm clone 9000 223 --name k3s-worker-01
+qm resize 223 scsi0 32G
+qm set 223 --net0 virtio,bridge=vmbr0,tag=12
+qm set 223 --cpu host
+qm set 223 --memory 16384
+qm set 223 --cores 4
+qm set 223 --ostype l26
+qm set 223 --tags k3s
+qm set 223 --localtime 1
+qm set 223 --onboot 1
+qm set 223 --ciuser jurre
+qm set 223 --sshkey ~/.ssh/id_rsa.pub
+qm set 223 --ciupgrade 1
+qm set 223 --ipconfig0 ip=172.16.12.25/24,gw=172.16.12.1
 
-qm clone 9000 201 --name k3s-worker-02
-qm resize 201 scsi0 32G
-qm set 201 --net0 virtio,bridge=vmbr0,macaddr=BC:24:11:07:BA:1A
-qm set 201 --cpu host
-qm set 201 --memory 4096
-qm set 201 --cores 3
-qm set 201 --ciuser wim
-qm set 201 --sshkey id_rsa.pub
-qm set 201 --ciupgrade 1
-qm set 201 --ipconfig0 ip=dhcp
+qm clone 9000 224 --name k3s-worker-02
+qm resize 224 scsi0 32G
+qm set 224 --net0 virtio,bridge=vmbr0,tag=12
+qm set 224 --cpu host
+qm set 224 --memory 16384
+qm set 224 --cores 4
+qm set 224 --ostype l26
+qm set 224 --tags k3s
+qm set 224 --localtime 1
+qm set 224 --onboot 1
+qm set 224 --ciuser jurre
+qm set 224 --sshkey ~/.ssh/id_rsa.pub
+qm set 224 --ciupgrade 1
+qm set 224 --ipconfig0 ip=172.16.12.26/24,gw=172.16.12.1
 
-qm start 100
-qm start 101
-qm start 102
-qm start 200
-qm start 201
+qm clone 9000 225 --name k3s-worker-03
+qm resize 225 scsi0 32G
+qm set 225 --net0 virtio,bridge=vmbr0,tag=12
+qm set 225 --cpu host
+qm set 225 --memory 16384
+qm set 225 --cores 4
+qm set 225 --ostype l26
+qm set 225 --tags k3s
+qm set 225 --localtime 1
+qm set 225 --onboot 1
+qm set 225 --ciuser jurre
+qm set 225 --sshkey ~/.ssh/id_rsa.pub
+qm set 225 --ciupgrade 1
+qm set 225 --ipconfig0 ip=172.16.12.27/24,gw=172.16.12.1
+
+qm start 220
+qm start 221
+qm start 222
+qm start 223
+qm start 224
+qm start 225
 ```
 
 ## Install first server (control plane node)
@@ -116,7 +153,7 @@ All `K3s` versions can be found here: [k3s release](https://github.com/k3s-io/k3
 
 ```bash
 # Use a specific version of K3s.
-export INSTALL_K3S_VERSION=v1.30.6+k3s1
+export INSTALL_K3S_VERSION=v1.31.5+k3s1
 
 # Installs K3s, initializes the first server in HA mode and disables Traefik and the ServiceLB load balancer.
 sudo curl -sfL https://get.k3s.io | sh -s - server --cluster-init --disable="traefik" --disable="servicelb"
@@ -132,7 +169,7 @@ sudo cat /var/lib/rancher/k3s/server/token
 
 ```bash
 export INSTALL_K3S_VERSION=v1.30.6+k3s1
-export K3S_URL=https://192.168.1.201:6443
+export K3S_URL=https://172.16.12.22:6443
 export K3S_TOKEN=<token from first server>
 
 sudo curl -sfL https://get.k3s.io |sh -s - server --disable="traefik" --disable="servicelb"
@@ -141,8 +178,8 @@ sudo curl -sfL https://get.k3s.io |sh -s - server --disable="traefik" --disable=
 ## Install agents (worker nodes)
 
 ```bash
-export INSTALL_K3S_VERSION=v1.30.6+k3s1
-export K3S_URL=https://192.168.1.201:6443
+export INSTALL_K3S_VERSION=v1.31.5+k3s1
+export K3S_URL=https://172.16.12.22:6443
 export K3S_TOKEN=<token from first server>
 
 sudo curl -sfL https://get.k3s.io | sh -s - agent
