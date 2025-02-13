@@ -105,7 +105,7 @@ qm resize 300 scsi0 32G
 qm set 300 --net0 virtio,bridge=vmbr0,macaddr=BC:24:11:EA:6D:1F
 qm set 300 --cpu host
 qm set 300 --memory 2048
-qm set 300 --cores 2
+qm set 300 --cores 1
 qm set 300 --ciuser wim
 qm set 300 --sshkey id_rsa.pub
 qm set 300 --ciupgrade 1
