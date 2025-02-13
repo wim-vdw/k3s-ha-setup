@@ -19,6 +19,8 @@ The use of `K3s` ensures minimal resource overhead, making it ideal for environm
 | k3s-server-03 | BC:24:11:4F:A3:86 | 192.168.1.203 | 4           | 32             | 2         |
 | k3s-worker-01 | BC:24:11:12:B1:D2 | 192.168.1.211 | 8           | 32             | 4         |
 | k3s-worker-02 | BC:24:11:07:BA:1A | 192.168.1.212 | 8           | 32             | 4         |
+| k3s-lb-01     | BC:24:11:EA:6D:1F | 192.168.1.221 | 2           | 32             | 1         |
+| k3s-lb-02     | BC:24:11:6B:DC:F9 | 192.168.1.222 | 2           | 32             | 1         |
 
 ## Create VMs in Proxmox
 
@@ -98,10 +100,34 @@ qm set 201 --sshkey id_rsa.pub
 qm set 201 --ciupgrade 1
 qm set 201 --ipconfig0 ip=dhcp
 
+qm clone 9000 300 --name k3s-lb-01
+qm resize 300 scsi0 32G
+qm set 300 --net0 virtio,bridge=vmbr0,macaddr=BC:24:11:EA:6D:1F
+qm set 300 --cpu host
+qm set 300 --memory 2048
+qm set 300 --cores 2
+qm set 300 --ciuser wim
+qm set 300 --sshkey id_rsa.pub
+qm set 300 --ciupgrade 1
+qm set 300 --ipconfig0 ip=dhcp
+
+qm clone 9000 301 --name k3s-lb-02
+qm resize 301 scsi0 32G
+qm set 301 --net0 virtio,bridge=vmbr0,macaddr=BC:24:11:6B:DC:F9
+qm set 301 --cpu host
+qm set 301 --memory 2048
+qm set 301 --cores 1
+qm set 301 --ciuser wim
+qm set 301 --sshkey id_rsa.pub
+qm set 301 --ciupgrade 1
+qm set 301 --ipconfig0 ip=dhcp
+
 qm start 100
 qm start 101
 qm start 102
 qm start 200
+qm start 201
+qm start 300
 qm start 201
 ```
 
