@@ -128,7 +128,7 @@ qm start 102
 qm start 200
 qm start 201
 qm start 300
-qm start 201
+qm start 301
 ```
 
 ## Install first server (control plane node)
