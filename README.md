@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This project involves deploying a Kubernetes cluster using `K3s` on a set of 5 virtual machines (VMs) running on
+This project involves deploying a Kubernetes cluster using `K3s` on a set of 7 virtual machines (VMs) running on
 Proxmox Virtual Environment.  
 The setup is designed to provide a lightweight, efficient and scalable Kubernetes environment for testing and
 development.  
