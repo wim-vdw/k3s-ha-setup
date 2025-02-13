@@ -2,23 +2,23 @@
 
 ## Introduction
 
-This project involves deploying a Kubernetes cluster using `K3s` on a set of 5 virtual machines (VMs). The VMs are
-running on Proxmox hosted on an old x86 PC with 16Gb of memory. The setup is designed to provide a lightweight,
-efficient and scalable Kubernetes environment for testing and development.  
+This project involves deploying a Kubernetes cluster using `K3s` on a set of 5 virtual machines (VMs) running on
+Proxmox Virtual Environment.  
+The setup is designed to provide a lightweight, efficient and scalable Kubernetes environment for testing and
+development.  
 The cluster consists of 3 control plane nodes and 2 worker nodes, providing a solid foundation for deploying and
-managing containerized applications. The use of `K3s` ensures minimal resource overhead, making it ideal for
-environments
-with limited hardware resources.
+managing containerized applications.  
+The use of `K3s` ensures minimal resource overhead, making it ideal for environments with limited hardware resources.
 
 ## VM overview
 
 | VM Name       | MAC Address       | IP Address    | Memory (Gb) | Disk Size (Gb) | CPU Cores |
 |---------------|-------------------|---------------|-------------|----------------|-----------|
-| k3s-server-01 | BC:24:11:66:6F:07 | 192.168.1.201 | 2           | 32             | 1         |
-| k3s-server-02 | BC:24:11:02:57:C8 | 192.168.1.202 | 2           | 32             | 1         |
-| k3s-server-03 | BC:24:11:4F:A3:86 | 192.168.1.203 | 2           | 32             | 1         |
-| k3s-worker-01 | BC:24:11:12:B1:D2 | 192.168.1.211 | 4           | 32             | 3         |
-| k3s-worker-02 | BC:24:11:07:BA:1A | 192.168.1.212 | 4           | 32             | 3         |
+| k3s-server-01 | BC:24:11:66:6F:07 | 192.168.1.201 | 4           | 32             | 2         |
+| k3s-server-02 | BC:24:11:02:57:C8 | 192.168.1.202 | 4           | 32             | 2         |
+| k3s-server-03 | BC:24:11:4F:A3:86 | 192.168.1.203 | 4           | 32             | 2         |
+| k3s-worker-01 | BC:24:11:12:B1:D2 | 192.168.1.211 | 8           | 32             | 4         |
+| k3s-worker-02 | BC:24:11:07:BA:1A | 192.168.1.212 | 8           | 32             | 4         |
 
 ## Create VMs in Proxmox
 
