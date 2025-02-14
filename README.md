@@ -7,9 +7,24 @@ Proxmox Virtual Environment.
 The setup is designed to provide a lightweight, efficient and scalable Kubernetes environment for testing and
 development.  
 The cluster consists of 3 control plane nodes, 2 worker nodes, and 2 additional VMs for `HAProxy` load balancer and
-`KeepAlived`, providing a solid foundation for deploying and managing containerized applications.
+`Keepalived`, providing a solid foundation for deploying and managing containerized applications.
 
-## VM overview
+Ensure high availability (HA) for the Kubernetes API server by:
+
+* **HAProxy** Load balances traffic across multiple `K3s` server nodes, ensuring even distribution and redundancy.
+* **Keepalived** Provides a virtual IP for `HAProxy`, enabling automatic failover between HAProxy instances to ensure
+  high availability.
+
+If a `K3s` server node goes down, `HAProxy` routes traffic to the remaining healthy servers.  
+If an `HAProxy` instance fails, `Keepalived` shifts the virtual IP to another `HAProxy` node, maintaining API
+availability.
+
+References:
+
+* [K3s - High Availability Embedded etcd](https://docs.k3s.io/datastore/ha-embedded)
+* [K3s - Cluster Load Balancer](https://docs.k3s.io/datastore/cluster-loadbalancer)
+
+## VM overview + IP addresses
 
 | VM Name       | MAC Address       | IP Address    | Memory (Gb) | Disk Size (Gb) | CPU Cores |
 |---------------|-------------------|---------------|-------------|----------------|-----------|
@@ -20,6 +35,8 @@ The cluster consists of 3 control plane nodes, 2 worker nodes, and 2 additional 
 | k3s-worker-02 | BC:24:11:07:BA:1A | 192.168.1.212 | 8           | 32             | 4         |
 | k3s-lb-01     | BC:24:11:EA:6D:1F | 192.168.1.221 | 2           | 32             | 1         |
 | k3s-lb-02     | BC:24:11:6B:DC:F9 | 192.168.1.222 | 2           | 32             | 1         |
+
+Keepalived virtual IP address: **192.168.1.220**
 
 ## Create VMs in Proxmox
 
@@ -134,6 +151,8 @@ qm start 301
 
 Use the `--cluster-init` flag to create the first server in the cluster and initialize the embedded `etcd` datastore for
 high availability (HA).  
+Use the `--tls-san` flag to specify the fixed IP address that will be used by `Keepalived` as virtual IP to access the
+cluster.  
 To install a specific version of `K3s`, set the `INSTALL_K3S_VERSION` environment variable before running the
 installation
 script.  
@@ -287,4 +306,4 @@ test04           green-dep-5d77bd8d4d-hvsfr                          1/1     Run
 - [X] Add VM creation with Proxmox and cloud-init.
 - [X] Add new Argo CD configuration repositories.
 - [ ] Analyse performance/stability of etcd datastore.
-- [ ] Make Kubernetes API Server high available with `HAProxy` and `KeepAlived`.
+- [ ] Make Kubernetes API Server high available with `HAProxy` and `Keepalived`.
