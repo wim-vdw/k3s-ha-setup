@@ -7,8 +7,7 @@ Proxmox Virtual Environment.
 The setup is designed to provide a lightweight, efficient and scalable Kubernetes environment for testing and
 development.  
 The cluster consists of 3 control plane nodes, 2 worker nodes, and 2 additional VMs for `HAProxy` load balancer and
-`KeepAlived`, providing a solid foundation for deploying and managing containerized applications
-The use of `K3s` ensures minimal resource overhead, making it ideal for environments with limited hardware resources.
+`KeepAlived`, providing a solid foundation for deploying and managing containerized applications.
 
 ## VM overview
 
