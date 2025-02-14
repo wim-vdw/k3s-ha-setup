@@ -2,12 +2,12 @@
 
 ## Introduction
 
-This project involves deploying a Kubernetes cluster using `K3s` on a set of 5 virtual machines (VMs) running on
+This project involves deploying a Kubernetes cluster using `K3s` on a set of 7 virtual machines (VMs) running on
 Proxmox Virtual Environment.  
 The setup is designed to provide a lightweight, efficient and scalable Kubernetes environment for testing and
 development.  
-The cluster consists of 3 control plane nodes and 2 worker nodes, providing a solid foundation for deploying and
-managing containerized applications.  
+The cluster consists of 3 control plane nodes, 2 worker nodes, and 2 additional VMs for `HAProxy` load balancer and
+`KeepAlived`, providing a solid foundation for deploying and managing containerized applications
 The use of `K3s` ensures minimal resource overhead, making it ideal for environments with limited hardware resources.
 
 ## VM overview
@@ -19,6 +19,8 @@ The use of `K3s` ensures minimal resource overhead, making it ideal for environm
 | k3s-server-03 | BC:24:11:4F:A3:86 | 192.168.1.203 | 4           | 32             | 2         |
 | k3s-worker-01 | BC:24:11:12:B1:D2 | 192.168.1.211 | 8           | 32             | 4         |
 | k3s-worker-02 | BC:24:11:07:BA:1A | 192.168.1.212 | 8           | 32             | 4         |
+| k3s-lb-01     | BC:24:11:EA:6D:1F | 192.168.1.221 | 2           | 32             | 1         |
+| k3s-lb-02     | BC:24:11:6B:DC:F9 | 192.168.1.222 | 2           | 32             | 1         |
 
 ## Create VMs in Proxmox
 
@@ -47,8 +49,8 @@ qm clone 9000 100 --name k3s-server-01
 qm resize 100 scsi0 32G
 qm set 100 --net0 virtio,bridge=vmbr0,macaddr=BC:24:11:66:6F:07
 qm set 100 --cpu host
-qm set 100 --memory 2048
-qm set 100 --cores 1
+qm set 100 --memory 4096
+qm set 100 --cores 2
 qm set 100 --ciuser wim
 qm set 100 --sshkey id_rsa.pub
 qm set 100 --ciupgrade 1
@@ -58,8 +60,8 @@ qm clone 9000 101 --name k3s-server-02
 qm resize 101 scsi0 32G
 qm set 101 --net0 virtio,bridge=vmbr0,macaddr=BC:24:11:02:57:C8
 qm set 101 --cpu host
-qm set 101 --memory 2048
-qm set 101 --cores 1
+qm set 101 --memory 4096
+qm set 101 --cores 2
 qm set 101 --ciuser wim
 qm set 101 --sshkey id_rsa.pub
 qm set 101 --ciupgrade 1
@@ -69,8 +71,8 @@ qm clone 9000 102 --name k3s-server-03
 qm resize 102 scsi0 32G
 qm set 102 --net0 virtio,bridge=vmbr0,macaddr=BC:24:11:4F:A3:86
 qm set 102 --cpu host
-qm set 102 --memory 2048
-qm set 102 --cores 1
+qm set 102 --memory 4096
+qm set 102 --cores 2
 qm set 102 --ciuser wim
 qm set 102 --sshkey id_rsa.pub
 qm set 102 --ciupgrade 1
@@ -80,8 +82,8 @@ qm clone 9000 200 --name k3s-worker-01
 qm resize 200 scsi0 32G
 qm set 200 --net0 virtio,bridge=vmbr0,macaddr=BC:24:11:12:B1:D2
 qm set 200 --cpu host
-qm set 200 --memory 4096
-qm set 200 --cores 3
+qm set 200 --memory 8192
+qm set 200 --cores 4
 qm set 200 --ciuser wim
 qm set 200 --sshkey id_rsa.pub
 qm set 200 --ciupgrade 1
@@ -91,18 +93,42 @@ qm clone 9000 201 --name k3s-worker-02
 qm resize 201 scsi0 32G
 qm set 201 --net0 virtio,bridge=vmbr0,macaddr=BC:24:11:07:BA:1A
 qm set 201 --cpu host
-qm set 201 --memory 4096
-qm set 201 --cores 3
+qm set 201 --memory 8192
+qm set 201 --cores 4
 qm set 201 --ciuser wim
 qm set 201 --sshkey id_rsa.pub
 qm set 201 --ciupgrade 1
 qm set 201 --ipconfig0 ip=dhcp
+
+qm clone 9000 300 --name k3s-lb-01
+qm resize 300 scsi0 32G
+qm set 300 --net0 virtio,bridge=vmbr0,macaddr=BC:24:11:EA:6D:1F
+qm set 300 --cpu host
+qm set 300 --memory 2048
+qm set 300 --cores 1
+qm set 300 --ciuser wim
+qm set 300 --sshkey id_rsa.pub
+qm set 300 --ciupgrade 1
+qm set 300 --ipconfig0 ip=dhcp
+
+qm clone 9000 301 --name k3s-lb-02
+qm resize 301 scsi0 32G
+qm set 301 --net0 virtio,bridge=vmbr0,macaddr=BC:24:11:6B:DC:F9
+qm set 301 --cpu host
+qm set 301 --memory 2048
+qm set 301 --cores 1
+qm set 301 --ciuser wim
+qm set 301 --sshkey id_rsa.pub
+qm set 301 --ciupgrade 1
+qm set 301 --ipconfig0 ip=dhcp
 
 qm start 100
 qm start 101
 qm start 102
 qm start 200
 qm start 201
+qm start 300
+qm start 301
 ```
 
 ## Install first server (control plane node)
@@ -116,10 +142,10 @@ All `K3s` versions can be found here: [k3s release](https://github.com/k3s-io/k3
 
 ```bash
 # Use a specific version of K3s.
-export INSTALL_K3S_VERSION=v1.30.6+k3s1
+export INSTALL_K3S_VERSION=v1.31.5+k3s1
 
 # Installs K3s, initializes the first server in HA mode and disables Traefik and the ServiceLB load balancer.
-sudo curl -sfL https://get.k3s.io | sh -s - server --cluster-init --disable="traefik" --disable="servicelb"
+sudo curl -sfL https://get.k3s.io | sh -s - server --cluster-init --disable="traefik" --disable="servicelb" --tls-san=192.168.1.220
 
 # Displays the kubeconfig file for accessing the K3s cluster.
 sudo cat /etc/rancher/k3s/k3s.yaml
@@ -131,17 +157,17 @@ sudo cat /var/lib/rancher/k3s/server/token
 ## Install additional servers (control plane nodes)
 
 ```bash
-export INSTALL_K3S_VERSION=v1.30.6+k3s1
+export INSTALL_K3S_VERSION=v1.31.5+k3s1
 export K3S_URL=https://192.168.1.201:6443
 export K3S_TOKEN=<token from first server>
 
-sudo curl -sfL https://get.k3s.io |sh -s - server --disable="traefik" --disable="servicelb"
+sudo curl -sfL https://get.k3s.io |sh -s - server --disable="traefik" --disable="servicelb" --tls-san=192.168.1.220
 ```
 
 ## Install agents (worker nodes)
 
 ```bash
-export INSTALL_K3S_VERSION=v1.30.6+k3s1
+export INSTALL_K3S_VERSION=v1.31.5+k3s1
 export K3S_URL=https://192.168.1.201:6443
 export K3S_TOKEN=<token from first server>
 
