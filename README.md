@@ -241,6 +241,10 @@ sudo systemctl restart haproxy
 sudo systemctl restart keepalived
 ```
 
+> The VIP `192.168.1.220` can now be used to access the Kubernetes API server and to join `K3s` worker nodes (for
+> control plane nodes this is not required).  
+> All of this will be explained in the next chapters.
+
 ## Install first server (control plane node)
 
 Use the `--cluster-init` flag to create the first server in the cluster and initialize the embedded `etcd` datastore for
