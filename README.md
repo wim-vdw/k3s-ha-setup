@@ -147,6 +147,100 @@ qm start 300
 qm start 301
 ```
 
+## Install and setup HAProxy and Keepalived
+
+Install HAProxy and Keepalived on `k3s-lb-01` and `k3s-lb-02`:
+
+```bash
+sudo apt-get install haproxy keepalived
+```
+
+Add (at the end of file) the following to `/etc/haproxy/haproxy.cfg` on `k3s-lb-01` and `k3s-lb-02`:
+
+```bash
+frontend k3s-frontend
+    bind *:6443
+    mode tcp
+    option tcplog
+    default_backend k3s-backend
+
+backend k3s-backend
+    mode tcp
+    option tcp-check
+    balance roundrobin
+    default-server inter 10s downinter 5s
+    server k3s-server-01 192.168.1.201:6443 check
+    server k3s-server-02 192.168.1.202:6443 check
+    server k3s-server-03 192.168.1.203:6443 check
+````
+
+Add the following to `/etc/keepalived/keepalived.conf` on `k3s-lb-01` (MASTER):
+
+```bash
+global_defs {
+  enable_script_security
+  script_user root
+}
+
+vrrp_script chk_haproxy {
+    script 'killall -0 haproxy' # faster than pidof
+    interval 2
+}
+
+vrrp_instance haproxy-vip {
+    interface eth0
+    state MASTER # MASTER on k3s-lb-01, BACKUP on k3s-lb-02
+    priority 200 # 200 on k3s-lb-01, 100 on k3s-lb-02
+
+    virtual_router_id 51
+
+    virtual_ipaddress {
+        192.168.1.220/24
+    }
+
+    track_script {
+        chk_haproxy
+    }
+}
+```
+
+Add the following to `/etc/keepalived/keepalived.conf` on `k3s-lb-02` (BACKUP):
+
+```bash
+global_defs {
+  enable_script_security
+  script_user root
+}
+
+vrrp_script chk_haproxy {
+    script 'killall -0 haproxy' # faster than pidof
+    interval 2
+}
+
+vrrp_instance haproxy-vip {
+    interface eth0
+    state BACKUP # MASTER on k3s-lb-01, BACKUP on k3s-lb-02
+    priority 100 # 200 on k3s-lb-01, 100 on k3s-lb-02
+
+    virtual_router_id 51
+
+    virtual_ipaddress {
+        192.168.1.220/24
+    }
+
+    track_script {
+        chk_haproxy
+    }
+}
+```
+
+Restart `HAProxy` and `Keepalived` on `k3s-lb-01` and `k3s-lb-02`:
+
+```bash
+sudo systemctl restart haproxy
+sudo systemctl restart keepalived
+```
+
 ## Install first server (control plane node)
 
 Use the `--cluster-init` flag to create the first server in the cluster and initialize the embedded `etcd` datastore for
