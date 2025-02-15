@@ -358,6 +358,7 @@ Core applications:
 * `Ingress NGINX` controller for Kubernetes
 * `MetalLB` load-balancer implementation for bare metal Kubernetes clusters
 * `Reloader` controller to watch changes in Kubernetes ConfigMaps and Secrets
+* `cert-manager` controller to obtain and renew TLS certificates before they expire
 
 Control Plane Taints:
 
