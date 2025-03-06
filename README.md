@@ -402,5 +402,5 @@ test04           green-dep-5d77bd8d4d-hvsfr                          1/1     Run
 - [X] Add workload example after bootstrapping Argo CD and deploying core and test applications.
 - [X] Add VM creation with Proxmox and cloud-init.
 - [X] Add new Argo CD configuration repositories.
-- [ ] Analyse performance/stability of etcd datastore.
-- [ ] Make Kubernetes API Server high available with `HAProxy` and `Keepalived`.
+- [X] Analyse performance/stability of etcd datastore.
+- [X] Make Kubernetes API Server high available with `HAProxy` and `Keepalived`.
