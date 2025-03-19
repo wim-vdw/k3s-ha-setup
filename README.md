@@ -258,7 +258,7 @@ All `K3s` versions can be found here: [k3s release](https://github.com/k3s-io/k3
 
 ```bash
 # Use a specific version of K3s.
-export INSTALL_K3S_VERSION=v1.31.5+k3s1
+export INSTALL_K3S_VERSION=v1.31.6+k3s1
 
 # Installs K3s, initializes the first server in HA mode and disables Traefik and the ServiceLB load balancer.
 sudo curl -sfL https://get.k3s.io | sh -s - server --cluster-init --disable="traefik" --disable="servicelb" --tls-san=192.168.1.220
@@ -273,7 +273,7 @@ sudo cat /var/lib/rancher/k3s/server/token
 ## Install additional servers (control plane nodes)
 
 ```bash
-export INSTALL_K3S_VERSION=v1.31.5+k3s1
+export INSTALL_K3S_VERSION=v1.31.6+k3s1
 export K3S_URL=https://192.168.1.201:6443
 export K3S_TOKEN=<token from first server>
 
@@ -283,7 +283,7 @@ sudo curl -sfL https://get.k3s.io |sh -s - server --disable="traefik" --disable=
 ## Install agents (worker nodes)
 
 ```bash
-export INSTALL_K3S_VERSION=v1.31.5+k3s1
+export INSTALL_K3S_VERSION=v1.31.6+k3s1
 export K3S_URL=https://192.168.1.220:6443
 export K3S_TOKEN=<token from first server>
 
