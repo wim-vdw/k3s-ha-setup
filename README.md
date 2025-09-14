@@ -277,7 +277,7 @@ export INSTALL_K3S_VERSION=v1.31.6+k3s1
 export K3S_URL=https://192.168.1.201:6443
 export K3S_TOKEN=<token from first server>
 
-sudo curl -sfL https://get.k3s.io |sh -s - server --disable="traefik" --disable="servicelb" --tls-san=192.168.1.220
+sudo curl -sfL https://get.k3s.io |sh -s - server --disable="traefik" --disable="servicelb"
 ```
 
 ## Install agents (worker nodes)
